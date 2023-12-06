@@ -1,4 +1,5 @@
 import pickle
+import os
 
 from cumm import tensorview as tv
 from cumm.constants import PACKAGE_ROOT, TENSORVIEW_INCLUDE_PATH
@@ -7,6 +8,9 @@ from cumm.common import TensorView, TensorViewCPU, TensorViewNVRTCHashKernel, Te
 import numpy as np 
 from cumm.perftools import perf_context
 # @lineprof.lineprof_wrapper_cpp
+
+cuda_home = os.getenv("CUDA_HOME", '/usr/local/cuda')
+
 def test_nvrtc():
 
     # init driver
@@ -57,7 +61,7 @@ constexpr auto c2 = a.op<op::inverse>();
     """,
         opts=["--std=c++17", "-I",
               str(TENSORVIEW_INCLUDE_PATH), 
-              "-I", "/usr/local/cuda/include"])
+              "-I", f"{cuda_home}/include"])
     print(prog.ptx())
 
     mod = tv.NVRTCModule(prog)
@@ -192,7 +196,7 @@ def test_nvrtc_problem():
     """,
         opts=["--std=c++17", "-I",
               str(TENSORVIEW_INCLUDE_PATH), 
-              "-I", "/usr/local/cuda/include", "--gpu-architecture=sm_52"])
+              "-I", f"{cuda_home}/include", "--gpu-architecture=sm_52"])
     print(prog.ptx())
 
 def test_cpu_v0():

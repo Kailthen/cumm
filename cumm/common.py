@@ -26,6 +26,8 @@ from ccimport import compat
 from cumm.constants import CUMM_CPU_ONLY_BUILD, TENSORVIEW_INCLUDE_PATH
 from cumm.constants import PACKAGE_ROOT
 
+cuda_home = os.getenv("CUDA_HOME", '/usr/local/cuda')
+
 def get_executable_path(executable: str) -> str:
     if compat.InWindows:
         cmd = ["powershell.exe", "(Get-Command {}).Path".format(executable)]
@@ -246,7 +248,7 @@ def _get_cuda_include_lib():
             include = windows_cuda_root / f"v{version_str}\\include"
             lib64 = windows_cuda_root / f"v{version_str}\\lib\\x64"
         else:
-            linux_cuda_root = Path("/usr/local/cuda")
+            linux_cuda_root = Path(cuda_home)
             include = linux_cuda_root / f"include"
             lib64 = linux_cuda_root / f"lib64"
         _CACHED_CUDA_INCLUDE_LIB = (include, lib64)

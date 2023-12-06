@@ -22,6 +22,7 @@ from setuptools.extension import Extension
 NAME = 'cumm'
 RELEASE_NAME = NAME
 cuda_ver = os.getenv("CUMM_CUDA_VERSION", None)
+cuda_home = os.getenv("CUDA_HOME", '/usr/local/cuda')
 
 if cuda_ver is not None and cuda_ver != "":
     cuda_ver = cuda_ver.replace(".", "")  # 10.2 to 102
@@ -149,7 +150,7 @@ class CopyHeaderCallback(ExtCallback):
         shutil.copytree(code_path, include_path)
         if compat.InLinux:
             # copy /usr/local/cuda/lib64/libcudadevrt.a
-            cudadevrt = Path("/usr/local/cuda/lib64/libcudadevrt.a")
+            cudadevrt = Path(f"{cuda_home}/lib64/libcudadevrt.a")
             if cudadevrt.exists():
                 target_lib_path.mkdir(0o755, exist_ok=True)
                 shutil.copy(str(cudadevrt), str(target_lib_path / "libcudadevrt.a"))
